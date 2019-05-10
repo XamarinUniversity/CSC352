@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Refine the lock usage to reduce contention</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Thread Safety and Synchronization</header>
+
+    <section id="main">
+
+        <h1 id="page-title"></h1>
+
+        <h2>Duration</h2>
+        <p>5 minutes</p>
+
+        <h2>Goals</h2>
+
+        <p>
+            The goal of this lab is to increase our performance by providing a more fine-grained locking approach to our cats. Rather than locking the entire dining room, we will lock the sensors the cat needs - in this way, the cats won't all be in competition with each other, just with the cats to either side which should allow them to eat more bites each second.
+        </p>
+
+        <h2>Required assets</h2>
+        <p>
+            You will be continuing with the prior exercise's code in this lab.
+            The provided <strong>Exercise 3</strong> folder contains a sub-folder named <strong>Completed</strong> with a solution you can use to check your work. 
+        </p>
+
+        <h2>Steps</h2>
+        <p>
+            We will need to replace our current <code>static</code> lock with a finer grained lock. In this case, we will use the sensor objects we need to touch.
+        </p>
+        <ol>
+            <li>
+                Remove the <code>guard</code> lock you have been using to this point.
+            </li>
+            <li>
+                Use the <code>firstSensor</code> and <code>secondSensor</code> fields provided to cat - lock <code>firstSensor</code> first, check the sensor, and if succesful, lock the <code>secondSensor</code>.
+            </li>
+            <li>
+                Run the application to see if it improves the bites-per-second displayed next to each cat.
+            </li>
+        </ol>
+
+<p><a href="#" onclick="toggleCode(this,'lock');return false;" class="uiitem">Show Code</a>
+<div class="indent-medium" id="lock" style="display:none;">
+<pre class="prettyprint">
+void Eat()
+{
+    <mark>lock (firstSensor)</mark>
+    {
+        if (firstSensor.StepOnSensor(this))
+        {
+            <mark>lock (secondSensor)</mark>
+            {
+                if (secondSensor.StepOnSensor(this))
+                {
+                    TakeABite();
+                    secondSensor.LeaveBowl(this);
+                }
+            }
+            firstSensor.LeaveBowl(this);
+        }
+    }
+}         
+</pre>
+</div>
+</p>
+        <div class="hintblock">
+            The application may behave improperly at this point - in fact, it's very likely that you will cause the application to freeze and stop responding. Do a little diagnosis if this happens and see if you can figure out what's causing the issue. We'll then regroup and talk about why this is happening.
+        </div>
+
+        <h1>Summary</h1>
+        <p>
+            In this exercise you made the locking more fine-grained to provide better scalability and allow multiple cats to eat at the same time as long as they aren't next to each other.
+        </p>
+        <div class="align-right">
+            <a href="../Start%20Here.html">Go Back</a>
+        </div>
+    </section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>

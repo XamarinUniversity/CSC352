@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Use a monitor lock to control access to a resource</title>
+    <link rel="stylesheet" type="text/css" href="./res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./res/styles/prettify.css" />
+    <link rel="stylesheet" type="text/css" href="./res/styles/styles.css">
+</head>
+
+<body>
+    <!-- Use the same title as the StartHere -->
+    <header>Thread Safety and Synchronization</header>
+
+    <section id="main">
+
+        <h1 id="page-title"></h1>
+
+        <h2>Duration</h2>
+        <p>10 minutes</p>
+
+        <h2>Goals</h2>
+
+        <p>
+            The primary goal of this lab is control access to shared resources between multiple threads using locks.
+        </p>
+
+        <div align="center"><img src="res/images/ex1_complete.png" width="320" alt=""  style="border:1px solid #999999"/></div>
+      
+        <h2>Required assets</h2>
+        <p>
+            The provided <strong>Exercise 1</strong> folder contains a sub-folder named <strong>Completed</strong> with a solution you can use to check your work. 
+            Please make sure you have this folder before you begin.
+        </p>
+
+        <!-- Give them a challenge here, high-level steps of what we want them to do
+             so they can use this instead of the step-by-step (baby steps) included below -->
+        <h2>Challenge</h2>
+        <p>
+            The exercise explores a variation of the <a target="_blank" href="https://en.wikipedia.org/wiki/Dining_philosophers_problem">Dining Philosophers Problem</a>.  Each philosopher (or cat in this case) sits at a round table ready to eat dinner. In our app, cats don't like each other and refuse to eat next to another cat at the same time. So, a cat can only eat when the cat to their left and right are not eating. The challenge is to provide behavior that allows each cat at the table to eat so that none of them starve.
+        </p>
+        <p>
+            <ol>
+                <li>
+                    Open starter solution, inspect the classes in the <b>Model</b> folder.
+                    <ul class="indent-none">
+                        <li><b>Cat.cs</b> contains the code for a single <code>Cat</code>. All of your work in this lab will be done here. Each cat is in one of three states: Eating, Sleeping or Hungry.</li>
+                        <li><b>DiningRoom.cs</b> represents the room the cats are in.</li>
+                        <li><b>Sensor.cs</b> is the sensor placed on the left and right side of the bowl. A cat must have paws on both sensors to be able to eat.</li>
+                    </ul>
+                </li>
+                
+                <li>Select a target platform and run the application. You should see a lot of fights between the cats which are reported at the bottom of the screen. Our goal is to remove the possibility for a cat fight by synchronizing access to the bowl.</li>
+                <li>To do this, you will create a single <code>Monitor</code> object that each cat will need to acquire before they can eat.</li>
+            </ol>
+        </p>
+
+        <!-- Steps -->
+        <h1>Steps</h1>
+  
+        <h2>Explore the starter solution</h2>
+        <ol>
+            <li>Open the <b>Starter</b> solution in the <b>Exercise 1</b> folder.</li>
+            <li>Explore the classes in the <b>Models</b> folder:
+                <ul>
+                    <li>
+                        <b>Cat.cs</b>: This class models the philosophers.  Notice the cat can be in one of three states: Sleeping, Hungry, or Eating. When <b>Run</b> is called, a <b>Cat</b> object will attempt to progress through these states by continuously calling the <b>TakeNap</b> method followed by the <b>Eat</b> method.<br>The <b>Eat</b> method will increment the <b>Bites</b> property if the Cat is able to access both forks.
+                    </li>
+                    <li><b>Sensor.cs</b>: This class models the sensor next to the bowl. The cat needs to step on the sensor to the left and right of the bowl. If a cat tries to step on a sensor and another cat is present, a cat fight is reported in the dining room class.</li>
+                    <li><b>DiningRoom.cs</b>: This class models dining room. Specifically it creates <b>Sensor</b> instances, <b>Cat</b> instances, and calls the <b>Run</b> method on each <b>Cat</b> so they begin eating.</li>
+                </ul>
+            </li>
+            <li>
+                Run the application.  The UI will show the state of each <b>Cat</b> along with the number of times they've eaten since the last update. The bottom status bar will show conflicts for a <b>Sensor</b>. Our goal is to remove these conflicts.
+            </li>
+        </ol>
+
+        <h2>Use a global lock to protect the cats</h2>
+        <p>
+            We are going to start by providing a global (<code>static</code> monitor object to lock all the cats against. This will have the effect of allowing only one cat into the dining room at a time - but it should stop all cat fights. 
+        </p>
+        <ol>
+            <li>Open <b>Cat.cs</b> source file in the <b>Models</b> folder.</li>
+            <li>Add a <code>private static object</code> to the class definition. Name it "guard".</li>
+            <li>Locate the <code>Eat</code> method in the <code>Cat</code> class and use <code>Monitor.Enter</code> and <code>Monitor.Exit</code> to acquire and release the lock before we allow the cat to eat.</li>
+            <li>Run the application.  Notice with the <code>Monitor</code> code in place we no longer see conflicts between cats, and you should see a <em>fairly</em> even distribution between cats (2-3 bites for each cat each second).
+            </li>
+        </ol>
+
+<p><a href="#" onclick="toggleCode(this,'lock');return false;" class="uiitem">Show Code</a>
+<div class="indent-medium" id="lock" style="display:none;">
+<pre class="prettyprint">
+<mark>static private object guard = new object();</mark>
+
+void Eat()
+{
+    <mark>Monitor.Enter(guard);</mark>
+
+    if (firstSensor.StepOnSensor(this))
+    {
+        if (secondSensor.StepOnSensor(this))
+        {
+			TakeABite();
+            secondSensor.LeaveBowl(this);
+        }
+        firstSensor.LeaveBowl(this);
+    }
+
+    <mark>Monitor.Exit(guard);</mark>
+}         
+</pre>
+</div>
+</p>
+        <h1>Summary</h1>
+        <p>
+            In this exercise you used a single lock to allow multiple threads (cats) to share data (bowls and sensors).
+        </p>
+        <div class="align-right">
+            <a href="../Start%20Here.html">Go Back</a>
+        </div>
+    </section>
+
+    <script src="./res/js/jquery.min.js"></script>
+    <script src="./res/js/prettify.js"></script>
+    <script src="./res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.</footer>
+</body>
+</html>
