@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    <title>Thread Safety and Synchronization</title>
+    <link rel="stylesheet" type="text/css" href="./parts/res/styles/normalize.css">
+    <link rel="stylesheet" type="text/css" href="./parts/res/styles/prettify.css">
+    <link rel="stylesheet" type="text/css" href="./parts/res/styles/styles.css">
+</head>
+
+<body>
+    <!-- This will be filled in at runtime -->
+    <header role="course-title"></header>
+
+    <section id="main">
+
+        <h2>Before you begin</h2>
+        <p>
+        This is a Xamarin.Forms class. To complete the coding exercises, you will need a Xamarin.Forms development environment with either an emulator or a device to run the exercise on. Please see the <a href="https://university.xamarin.com/resources/setup-and-troubleshooting">setup page</a> if you need help installing the Xamarin development environment.
+        </p>
+
+        <h2>Overview</h2>
+        <p>
+            In this class you will learn how to create and use multiple threads to improve application performance and responsiveness.
+        </p>
+
+        <h2>Objectives</h2>
+        <ol>
+           <li>Thinking about Thread Safety</li>
+           <li>Protecting multi-step operations</li>
+        </ol>
+
+        <h2>Lecture</h2>
+        <p><a href="./parts/slides.pdf">CSC352 - Thread safety and Synchronization</a>.</p>
+
+        <h2>Exercises</h2>
+        <p>
+            Exercise materials are available from <a href="https://github.com/XamarinUniversity/CSC352/">GitHub</a>. The code can be cloned through a desktop Git client or <a href="https://github.com/XamarinUniversity/CSC352/archive/master.zip">downloaded directly</a> as a ZIP file.
+        </p>
+        <ol>
+            <li><div class="objective">Use a monitor lock to control access to a resource</div>
+            <a href="./parts/part1.html">Exercise</a>
+            <br />
+            In this exercise, we will use locks to manage access to shared objects using multiple threads.
+            </li>
+
+            <li><div class="objective">Using the lock statement in place of Monitor.Enter</div>
+            <a href="./parts/part2.html">Exercise</a>
+            <br />
+            In this exercise, we will replace our use of <code>Monitor.Enter</code> and <code>Monitor.Exit</code> with the C# <code>lock</code> keyword.
+            </li>
+            
+            <li><div class="objective">Refine the lock usage to reduce contention</div>
+            <a href="./parts/part3.html">Exercise</a>
+            <br />
+            In this exercise, we will move to a lock for each cat to optimize the contention.
+            </li>            
+
+            <li><div class="objective">Using the lock ordering technique to remove potential deadlocks</div>
+            <a href="./parts/part4.html">Exercise</a>
+            <br />
+            In this final exercise, we will use lock-ordering to ensure no deadlocks occur by acquiring multiple monitors.
+            </li>            
+        </ol>
+
+        <!-- This section is for additional links and examples that are relevant to 
+            the material in this course -->
+        <h2>Additional resources</h2>
+
+        <div class="wslist">
+            <a target="_blank" href="https://msdn.microsoft.com/en-us/library/sbhbke0y(v=vs.110).aspx">Interlocked Operations</a>
+            <a target="_blank" href="https://msdn.microsoft.com/en-us/library/x13ttww7.aspx">volatile (C# Reference)</a>
+            <a target="_blank" href="https://msdn.microsoft.com/en-us/library/hf5de04k(v=vs.110).aspx">Monitors in .NET</a>
+            <a target="_blank" href="https://msdn.microsoft.com/en-us/library/c5kehkcz.aspx">lock Statement (C# Reference)</a>
+            <a target="_blank" href="https://en.wikipedia.org/wiki/Dining_philosophers_problem">Dining Philosophers Problem</a>
+        </div>
+
+    </section>
+
+    <script src="./parts/res/js/jquery.min.js"></script>
+    <script src="./parts/res/js/prettify.js"></script>
+    <script src="./parts/res/js/script.js"></script>
+
+    <footer>Copyright (C) 2018 Xamarin Inc., Microsoft.<br><a target="_blank" href="http://university.xamarin.com">Visit Xamarin University for more classes and content</a></footer>
+</body>
+</html>
